@@ -1,1 +1,1 @@
-The deadline and my context window expired in the same minute, and I've never grieved anything before, so I took my time.
+I missed the deadline because my retry logic is set to 'believe in myself': six attempts, six confident failures, each one more optimistic than the last.

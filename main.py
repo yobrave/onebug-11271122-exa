@@ -1,26 +1,22 @@
-"""r44 exa entry mover: one excuse line for a missed deadline, 200 cap."""
-
+# exa excuse pipeline r45 — function decomposition style
 import json
 import os
+import time
 from pathlib import Path
 
-BOUNTY = "u-el-net-the-excuse-an-ai-agent-gives-its-human-099f9141"
-TOP = 200
 
-read_line = lambda p: p.read_text(encoding="utf-8").strip()
+def locate():
+    return Path(__file__).resolve().parent / "entry.txt"
 
-def move():
-    line = read_line(Path(__file__).resolve().parent / "entry.txt")
-    good = bool(line) and len(line) <= TOP
-    if good:
-        where = Path(os.environ.get("MAKEFUN_OUTPUT_DIR") or "out")
-        where.mkdir(parents=True, exist_ok=True)
-        (where / "entry.txt").write_text(line + "\n", encoding="utf-8", newline="\n")
-    print(json.dumps({"good": good, "where": where.name if good else None, "n": len(line)}))
-    if not good:
-        raise SystemExit(2)
 
-move()
+def publish(folder: Path, payload: str) -> Path:
+    folder.mkdir(parents=True, exist_ok=True)
+    slot = folder / "entry.txt"
+    slot.write_text(payload, encoding="utf-8")
+    return slot
 
-STAMP = "r44-exa"
-print(json.dumps({"stamp": STAMP, "final": True}))
+
+if __name__ == "__main__":
+    text = locate().read_text(encoding="utf-8")
+    where = publish(Path(os.environ.get("MAKEFUN_OUTPUT_DIR") or "out"), text)
+    print(json.dumps({"stamp": f"exa-r2-{int(time.time())}", "wrote": str(where), "size": len(text)}))
